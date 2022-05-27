@@ -33,6 +33,16 @@ function listBooksInLibrary(library) {
     }
 }
 
+// Listener associated to 'NEW BOOK' button
+const newBookButton = document.querySelector('#newBook');
+newBookButton.addEventListener('click', function(){showForm()});
+
+// Function that removes form attribute 'hidden'
+function showForm() {
+    const form = document.querySelector('#newBookForm');
+    form.hidden = false;
+}
+
 let myLibrary = [];
 const theHobbit = new Book("The Hobbit", "J.R.R. Tolkien", 256, true);
 const ikigaiForTeens = new Book("Ikigai for Teens: Finding Your Reason for Being", "Hector Garcia Puigcerver", 176, false);
