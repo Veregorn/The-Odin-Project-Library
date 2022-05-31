@@ -26,8 +26,13 @@ function listBooksInLibrary(library) {
             const element = library[i];
             const bookFile = document.createElement('tr');
             const bookData = document.createElement('td');
+            const deleteButtonCell = document.createElement('td');
+            const deleteButton = document.createElement('button');
+            deleteButton.innerHTML = "Remove Book";
             bookData.textContent = element.info();
+            deleteButtonCell.appendChild(deleteButton);
             bookFile.appendChild(bookData);
+            bookFile.appendChild(deleteButtonCell);
             table.appendChild(bookFile);
         }
     }
