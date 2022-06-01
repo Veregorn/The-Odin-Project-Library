@@ -24,16 +24,18 @@ function listBooksInLibrary(library) {
     for (const i in library) {
         if (Object.hasOwnProperty.call(library, i)) {
             const element = library[i];
-            const bookFile = document.createElement('tr');
+            const bookRow = document.createElement('tr');
             const bookData = document.createElement('td');
             const deleteButtonCell = document.createElement('td');
             const deleteButton = document.createElement('button');
             deleteButton.innerHTML = "Remove Book";
+            deleteButton.setAttribute('class','removeButton');
+            deleteButton.setAttribute('data-orderInArray',i);
             bookData.textContent = element.info();
             deleteButtonCell.appendChild(deleteButton);
-            bookFile.appendChild(bookData);
-            bookFile.appendChild(deleteButtonCell);
-            table.appendChild(bookFile);
+            bookRow.appendChild(bookData);
+            bookRow.appendChild(deleteButtonCell);
+            table.appendChild(bookRow);
         }
     }
 }
@@ -51,11 +53,18 @@ function showForm() {
 // Function that list the book passed in parameter
 function listThisBook(book) {
     const table = document.querySelector('#booksTable');
-    const bookFile = document.createElement('tr');
+    const bookRow = document.createElement('tr');
     const bookData = document.createElement('td');
+    const deleteButtonCell = document.createElement('td');
+    const deleteButton = document.createElement('button');
+    deleteButton.innerHTML = "Remove Book";
+    deleteButton.setAttribute('class','removeButton');
+    deleteButton.setAttribute('data-orderInArray',myLibrary.length-1);
     bookData.textContent = book.info();
-    bookFile.appendChild(bookData);
-    table.appendChild(bookFile);
+    deleteButtonCell.appendChild(deleteButton);
+    bookRow.appendChild(bookData);
+    bookRow.appendChild(deleteButtonCell);
+    table.appendChild(bookRow);
 }
 
 // Listener associated to 'Save Book' button
@@ -70,6 +79,7 @@ saveBookButton.addEventListener('click', function() {
     addBookToLibrary(newBook);
     listThisBook(newBook);
     document.getElementById("newBookForm").reset();
+    document.getElementById("newBookForm").hidden = true;
 });
 
 let myLibrary = [];
@@ -80,3 +90,14 @@ addBookToLibrary(theHobbit);
 addBookToLibrary(ikigaiForTeens);
 addBookToLibrary(vestidoDeNovia);
 listBooksInLibrary(myLibrary);
+
+// Listener associated to 'Remove Book' buttons
+const removeBookButtons = document.querySelectorAll('.removeButton');
+removeBookButtons.forEach((button) => {
+    button.addEventListener('click', function() {
+        /*const position = button.dataset.orderInArray;*/
+        console.log("position");
+    });
+});
+
+/* No existen las cosas, debería recargar la página con el nuevo array cada vez que lo modifico */
