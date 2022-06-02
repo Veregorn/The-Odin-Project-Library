@@ -11,6 +11,13 @@ function Book(title, author, pages, read) {
             return title + " by " + author + ", " + pages + " pages, not read yet";
         }
     }
+    this.changeReadStatus = function() {
+        if (this.read == true) {
+            this.read = false;
+        } else {
+            this.read = true;
+        }
+    }
 }
 
 // Function that takes a book and place it into the Array
@@ -31,10 +38,16 @@ function listBooksInLibrary(library) {
             deleteButton.innerHTML = "Remove Book";
             deleteButton.setAttribute('class','removeButton');
             deleteButton.setAttribute('data-orderInArray',i);
+            const changeStatusCell = document.createElement('td');
+            const changeStatusButton = document.createElement('button');
+            changeStatusButton.innerHTML = "Change Read Status";
+            changeStatusButton.setAttribute('class','statusButton');
             bookData.textContent = element.info();
             deleteButtonCell.appendChild(deleteButton);
+            changeStatusCell.appendChild(changeStatusButton);
             bookRow.appendChild(bookData);
             bookRow.appendChild(deleteButtonCell);
+            bookRow.appendChild(changeStatusCell);
             table.appendChild(bookRow);
         }
     }
@@ -61,10 +74,16 @@ function listThisBook(book) {
     deleteButton.setAttribute('class','removeButton');
     deleteButton.setAttribute('data-orderInArray',myLibrary.length-1);
     addListenerToARemoveButton(deleteButton);
+    const changeStatusCell = document.createElement('td');
+    const changeStatusButton = document.createElement('button');
+    changeStatusButton.innerHTML = "Change Read Status";
+    changeStatusButton.setAttribute('class','statusButton');
     bookData.textContent = book.info();
     deleteButtonCell.appendChild(deleteButton);
+    changeStatusCell.appendChild(changeStatusButton);
     bookRow.appendChild(bookData);
     bookRow.appendChild(deleteButtonCell);
+    bookRow.appendChild(changeStatusCell);
     table.appendChild(bookRow);
 }
 
