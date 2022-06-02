@@ -60,6 +60,7 @@ function listThisBook(book) {
     deleteButton.innerHTML = "Remove Book";
     deleteButton.setAttribute('class','removeButton');
     deleteButton.setAttribute('data-orderInArray',myLibrary.length-1);
+    addListenerToARemoveButton(deleteButton);
     bookData.textContent = book.info();
     deleteButtonCell.appendChild(deleteButton);
     bookRow.appendChild(bookData);
@@ -91,17 +92,22 @@ addBookToLibrary(ikigaiForTeens);
 addBookToLibrary(vestidoDeNovia);
 listBooksInLibrary(myLibrary);
 
-// Listener associated to 'Remove Book' buttons
-const removeBookButtons = document.querySelectorAll('.removeButton');
-removeBookButtons.forEach((button) => {
-    button.addEventListener('click', function() {
+// Function that creates the listener associated to a 'Remove Book' button
+function addListenerToARemoveButton(removeButton) {
+    removeButton.addEventListener('click', function() {
         // Let's remove the element from our array
-        const position = button.dataset.orderInArray;
+        const position = removeButton.dataset.orderInArray;
         myLibrary.splice(position,1);
         // Let's modify the DOM
         const table = document.querySelector('#booksTable');
-        const fatherNode = button.parentNode;
+        const fatherNode = removeButton.parentNode;
         const grandfatherNode = fatherNode.parentNode;
         table.removeChild(grandfatherNode);
     });
+}
+
+// Listener associated to 'Remove Book' buttons
+const removeBookButtons = document.querySelectorAll('.removeButton');
+removeBookButtons.forEach((button) => {
+    addListenerToARemoveButton(button);
 });
