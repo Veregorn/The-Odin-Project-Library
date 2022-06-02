@@ -95,9 +95,13 @@ listBooksInLibrary(myLibrary);
 const removeBookButtons = document.querySelectorAll('.removeButton');
 removeBookButtons.forEach((button) => {
     button.addEventListener('click', function() {
-        /*const position = button.dataset.orderInArray;*/
-        console.log("position");
+        // Let's remove the element from our array
+        const position = button.dataset.orderInArray;
+        myLibrary.splice(position,1);
+        // Let's modify the DOM
+        const table = document.querySelector('#booksTable');
+        const fatherNode = button.parentNode;
+        const grandfatherNode = fatherNode.parentNode;
+        table.removeChild(grandfatherNode);
     });
 });
-
-/* No existen las cosas, debería recargar la página con el nuevo array cada vez que lo modifico */
