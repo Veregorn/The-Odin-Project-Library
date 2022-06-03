@@ -42,6 +42,7 @@ function listBooksInLibrary(library) {
             const changeStatusButton = document.createElement('button');
             changeStatusButton.innerHTML = "Change Read Status";
             changeStatusButton.setAttribute('class','statusButton');
+            changeStatusButton.setAttribute('data-orderInArray',i);
             bookData.textContent = element.info();
             deleteButtonCell.appendChild(deleteButton);
             changeStatusCell.appendChild(changeStatusButton);
@@ -78,6 +79,8 @@ function listThisBook(book) {
     const changeStatusButton = document.createElement('button');
     changeStatusButton.innerHTML = "Change Read Status";
     changeStatusButton.setAttribute('class','statusButton');
+    changeStatusButton.setAttribute('data-orderInArray',myLibrary.length-1);
+    addListenerToAChangeStatusButton(changeStatusButton);
     bookData.textContent = book.info();
     deleteButtonCell.appendChild(deleteButton);
     changeStatusCell.appendChild(changeStatusButton);
@@ -115,7 +118,7 @@ listBooksInLibrary(myLibrary);
 function addListenerToARemoveButton(removeButton) {
     removeButton.addEventListener('click', function() {
         // Let's remove the element from our array
-        const position = removeButton.dataset.orderInArray;
+        const position = removeButton.dataset.orderinarray;
         myLibrary.splice(position,1);
         // Let's modify the DOM
         const table = document.querySelector('#booksTable');
@@ -129,4 +132,26 @@ function addListenerToARemoveButton(removeButton) {
 const removeBookButtons = document.querySelectorAll('.removeButton');
 removeBookButtons.forEach((button) => {
     addListenerToARemoveButton(button);
+});
+
+// Function that creates the listener associated to a 'Change Read Status' button
+function addListenerToAChangeStatusButton(changeButton) {
+    changeButton.addEventListener('click', function() {
+        // First, let's edit the object Book
+        const position = changeButton.dataset.orderinarray;
+        const book = myLibrary[position];
+        book.changeReadStatus();
+        // Let's modify the DOM
+        const table = document.querySelector('#booksTable');
+        const fatherNode = changeButton.parentNode;
+        const grandfatherNode = fatherNode.parentNode;
+        grandfatherNode.firstElementChild.textContent = 
+            myLibrary[changeButton.dataset.orderinarray].info();
+    });
+}
+
+// Listener associated to 'Change Status' buttons
+const changeStatusButtons = document.querySelectorAll('.statusButton');
+changeStatusButtons.forEach((button) => {
+    addListenerToAChangeStatusButton(button);
 });
