@@ -60,8 +60,8 @@ newBookButton.addEventListener('click', function(){showForm()});
 
 // Function that removes form attribute 'hidden'
 function showForm() {
-    const form = document.querySelector('#newBookForm');
-    form.hidden = false;
+    const form = document.querySelector('.popup');
+    form.style.display = "flex";
 }
 
 // Function that list the book passed in parameter
@@ -101,8 +101,11 @@ saveBookButton.addEventListener('click', function() {
     const newBook = new Book(title,author,pages,read);
     addBookToLibrary(newBook);
     listThisBook(newBook);
-    document.getElementById("newBookForm").reset();
-    document.getElementById("newBookForm").hidden = true;
+    
+    const form = document.getElementById("newBookForm");
+    form.reset();
+    const popup = document.querySelector('.popup');
+    popup.style.display = "none";
 });
 
 let myLibrary = [];
