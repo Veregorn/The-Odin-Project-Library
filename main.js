@@ -102,10 +102,7 @@ saveBookButton.addEventListener('click', function() {
     addBookToLibrary(newBook);
     listThisBook(newBook);
     
-    const form = document.getElementById("newBookForm");
-    form.reset();
-    const popup = document.querySelector('.popup');
-    popup.style.display = "none";
+    closeForm();
 });
 
 let myLibrary = [];
@@ -128,6 +125,8 @@ function addListenerToARemoveButton(removeButton) {
         const fatherNode = removeButton.parentNode;
         const grandfatherNode = fatherNode.parentNode;
         table.removeChild(grandfatherNode);
+        // We need to reorder all the indexes in the DOM to be the same as in the array
+        reorderDataAttributes();
     });
 }
 
@@ -158,3 +157,37 @@ const changeStatusButtons = document.querySelectorAll('.statusButton');
 changeStatusButtons.forEach((button) => {
     addListenerToAChangeStatusButton(button);
 });
+
+function closeForm() {
+    const form = document.getElementById("newBookForm");
+    form.reset();
+    const popup = document.querySelector('.popup');
+    popup.style.display = "none";
+}
+
+// Listener that hide the form if the user click outside it
+document.addEventListener('click', function(element) {
+    // Check if the zone clicked is out the form div
+    const isOutOfForm = element.target.closest('.popup-content');
+    // Check if the zone clicked is the 'New Book' button
+    const isButton = element.target.closest('button');
+    const popup = document.querySelector('.popup');
+    // If the users clicks out the form and the zone isn't the 'New Book' button and
+    // the form is visible...
+    if (!isOutOfForm && !isButton && popup.style.display == 'flex') {
+        closeForm();
+    }
+});
+
+function reorderDataAttributes() {
+    const deleteButtons = document.querySelectorAll('.removeButton');
+    const changeButtons = document.querySelectorAll('.statusButton');
+    for (let i = 0; i < deleteButtons.length; i++) {
+        const element = deleteButtons[i];
+        element.dataset.orderinarray = i.toString();
+    }
+    for (let j = 0; j < changeButtons.length; j++) {
+        const element = changeButtons[j];
+        element.dataset.orderinarray = j.toString();
+    }
+}
