@@ -18,11 +18,11 @@
         <div class="popup">
             <div class="popup-content">
                 <form id="newBookForm">
-                    <img src="./books-icon.png" alt="books">
+                    <img id="display-cover" src="./NoBookCover.png" alt="NoBookCover">
                     <label for="cover" class="custom-file-upload">
                         <i>Custom Cover</i>
                     </label>
-                    <input type="file" name="cover" id="cover" accept="image/png, image/jpeg">
+                    <input type="file" name="cover" id="cover" accept="image/png, image/jpeg, image/jpg">
                     <!--Can't use 'required' attribute because form has no action. Function 'checkForm()' instead-->
                     <input class="notCheckbox" type="text" name="title" id="title" placeholder="Title" onkeyup="checkForm()">
                     <input class="notCheckbox" type="text" name="author" id="author" placeholder="Author" onkeyup="checkForm()">

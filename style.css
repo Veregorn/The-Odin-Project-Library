@@ -63,6 +63,10 @@ body {
     align-items: center;
 }
 
+#header {
+    margin-top: 30px;
+}
+
 h1 {
     color: #EFEAD8;
     font-size: 5em;
@@ -96,19 +100,12 @@ h1 {
 }
 
 .popup-content {
-    height: 700px;
+    height: 850px;
     width: 450px;
     background: #EFEAD8;
     padding: 20px;
     border-radius: 5px;
     position: relative;
-}
-
-img {
-    width: 100px;
-    height: 100px;
-    display: block;
-    margin: 20px auto;
 }
 
 input[type="file"] {
@@ -124,6 +121,13 @@ input[type="file"] {
 
 .custom-file-upload:hover {
     background-color: #5F7161;
+}
+
+#display-cover {
+    width: 150px;
+    height: 220px;
+    display: block;
+    margin: 20px auto;
 }
 
 .notCheckbox {
@@ -190,7 +194,7 @@ label {
 
 .cover {
     width: 150px;
-    height: auto;
+    height: 220px;
 }
 
 .buttonsContainer {

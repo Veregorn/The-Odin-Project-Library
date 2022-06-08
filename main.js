@@ -34,7 +34,7 @@ function Book(cover, title, author, pages, read) {
         bookDiv.setAttribute('id','book-'+this.orderInLibrary);
         const cover = document.createElement('img');
         cover.setAttribute('class','cover');
-        cover.setAttribute('src','./' + this.cover);
+        cover.setAttribute('src',this.cover);
         cover.setAttribute('alt',this.title);
         bookDiv.appendChild(cover);
         const title = document.createElement('p');
@@ -151,7 +151,7 @@ function closeForm() {
 // Listener associated to 'Save Book' button
 const saveBookButton = document.querySelector('#saveBook');
 saveBookButton.addEventListener('click', function() {
-    const cover = "";
+    const cover = urlCover;
     const title = document.getElementById("title").value;
     const author = document.getElementById("author").value;
     const pages = document.getElementById("pages").value;
@@ -159,10 +159,10 @@ saveBookButton.addEventListener('click', function() {
 
     const newBook = new Book(cover,title,author,pages,read);
     addBookToLibrary(newBook);
-    
     closeForm();
 });
 
+let urlCover = "NoBookCover.png";
 let myLibrary = [];
 const theHobbit = new Book("the-hobbit.jpg","The Hobbit", "J.R.R. Tolkien", 256, true);
 const ikigaiForTeens = new Book("ikigai-for-teens.jpg","Ikigai for Teens: Finding Your Reason for Being", "Hector Garcia Puigcerver", 176, false);
@@ -212,4 +212,13 @@ document.addEventListener('click', function(element) {
     if (!isOutOfForm && !isButton && popup.style.display == 'flex') {
         closeForm();
     }
+});
+
+// Listener for covers
+const coverInput = document.querySelector('#cover');
+
+coverInput.addEventListener('change', function() {
+    const coverImg = document.querySelector('#display-cover');
+    urlCover = URL.createObjectURL(this.files[0]);
+    coverImg.src = urlCover;
 });
