@@ -19,9 +19,13 @@
             <div class="popup-content">
                 <form id="newBookForm">
                     <img src="./books-icon.png" alt="books">
+                    <label for="cover" class="custom-file-upload">
+                        <i>Custom Cover</i>
+                    </label>
+                    <input type="file" name="cover" id="cover" accept="image/png, image/jpeg">
                     <input class="notCheckbox" type="text" name="title" id="title" placeholder="Title" required>
                     <input class="notCheckbox" type="text" name="author" id="author" placeholder="Author" required>
-                    <input class="notCheckbox" type="number" name="pages" id="pages" placeholder="Pages" required>
+                    <input class="notCheckbox" type="number" min="1" max="30000" ondrop="return false;" onpaste="return false;" onkeypress="return event.charCode>=48 && event.charCode<=57" name="pages" id="pages" placeholder="Pages" required>
                     <input class="checkbox" type="checkbox" id="read" name="read">
                     <label for="read">Have you read this book yet?</label>
                     <button id="saveBook" type="button">Save Book</button>
@@ -29,9 +33,7 @@
             </div>
         </div>
         <div id="main">
-            <table id="booksTable">
-
-            </table>
+            
         </div>
     </div>
 </body>
