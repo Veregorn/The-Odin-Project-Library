@@ -80,6 +80,21 @@ function Book(cover, title, author, pages, read) {
     }
 }
 
+// Function that enable 'Save Book' button only when user fills fields 'Title', 'Author' and 'Pages'
+function checkForm() {
+    const requiredElements = document.querySelectorAll('.notCheckbox');
+    let canSaveBook = true;
+
+    for (let i = 0; i < requiredElements.length; i++) {
+        const element = requiredElements[i];
+        if (element.value.length == 0) {
+            canSaveBook = false;
+        }
+    }
+
+    document.getElementById('saveBook').disabled = !canSaveBook;
+}
+
 // Function that takes a book and place it into the Array and the DOM
 function addBookToLibrary(book) {
     myLibrary.push(book);
@@ -120,6 +135,8 @@ newBookButton.addEventListener('click', function(){showForm()});
 
 // Function that changes 'popup' class element 'display' property
 function showForm() {
+    const saveBookButton = document.getElementById('saveBook');
+    saveBookButton.disabled = true;
     const form = document.querySelector('.popup');
     form.style.display = "flex";
 }
