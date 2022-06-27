@@ -1,22 +1,71 @@
-// Books Constructor
-function Book(cover, title, author, pages, read) {
-    if (cover == "") {
-        this.cover = "./NoBookCover.png"
-    } else {
-        this.cover = cover
+// Class Book (new version)
+class Book {
+    // orderInLibrary;
+    id;
+
+    constructor(cover,title,author,pages,read) {
+        if (cover == "") {
+            this.cover = "./NoBookCover.png"
+        } else {
+            this.cover = cover
+        }
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.read = read;
     }
-    this.title = title
-    this.author = author
-    this.pages = pages
-    this.read = read
-    this.orderInLibrary = undefined
-    this.getOrderInLibrary = function() {
+
+    /*
+    getOrderInLibrary() {
         return this.orderInLibrary;
     }
-    this.isReaded = function() {
+    */
+
+    getBookId() {
+        return this.id;
+    }
+
+    setBookId(id) {
+        this.id = id;
+    }
+
+    getCover() {
+        return this.cover;
+    }
+
+    setCover(cover) {
+        this.cover = cover;
+    }
+
+    getTitle() {
+        return this.title;
+    }
+
+    setTitle(title) {
+        this.title = title;
+    }
+
+    getAuthor() {
+        return this.author;
+    }
+
+    setAuthor(author) {
+        this.author = author;
+    }
+
+    getPages() {
+        return this.pages;
+    }
+
+    setPages(pages) {
+        this.pages = pages;
+    }
+
+    isReaded() {
         return this.read;
     }
-    this.changeReadStatus = function() {
+
+    changeReadStatus() {
         if (this.read == true) {
             this.read = false;
 
@@ -24,10 +73,13 @@ function Book(cover, title, author, pages, read) {
             this.read = true;
         }
     }
-    this.changeOrderInLibrary = function(position) {
+
+    /*
+    changeOrderInLibrary(position) {
         this.orderInLibrary = position;
     }
-    this.show = function() {
+
+    show() {
         const container = document.querySelector('#main');
         const bookDiv = document.createElement('div');
         bookDiv.setAttribute('class','book');
@@ -73,10 +125,101 @@ function Book(cover, title, author, pages, read) {
         bookDiv.appendChild(btnCont);
         container.appendChild(bookDiv);
     }
-    this.unShow = function() {
+
+    unShow() {
         const container = document.querySelector('#main');
         const thisDiv = document.getElementById('book-'+this.orderInLibrary);
         container.removeChild(thisDiv);
+    }
+    */
+}
+
+class Library {
+    books = [];
+    idCounter = 0;
+
+    constructor(name) {
+        this.name = name;
+    }
+
+    addBookToLibrary(book) {
+        this.idCounter++;
+        book.setBookId(this.idCounter);
+        this.books.push(book);
+
+        /*
+        const index = this.books.length-1;
+        book.changeOrderInLibrary(index);
+        book.show();
+        const thisRmvBtn = document.querySelector('[data-indexrmv="' + index + '"]');
+        const thisStatBtn = document.querySelector('[data-indexstat="' + index + '"]');
+        addListenerToARemoveButton(thisRmvBtn);
+        addListenerToAChangeStatusButton(thisStatBtn);
+        */
+    }
+
+    removeBookFromLibrary(id) {
+        for (let i = 0; i < this.books.length; i++) {
+            if (this.books[i].id == id) {
+                this.books.splice(i,1);
+            }
+        }
+    }
+}
+
+class UIController {
+    
+    container = document.querySelector('#main');
+    
+    showBook(book) {
+        const bookDiv = document.createElement('div');
+        bookDiv.setAttribute('class','book');
+        bookDiv.setAttribute('id','book-'+book.getBookId());
+        const cover = document.createElement('img');
+        cover.setAttribute('class','cover');
+        cover.setAttribute('src',book.getCover());
+        cover.setAttribute('alt',book.getTitle());
+        bookDiv.appendChild(cover);
+        const title = document.createElement('p');
+        title.setAttribute('class','title');
+        title.textContent = book.getTitle();
+        bookDiv.appendChild(title);
+        const author = document.createElement('p');
+        author.setAttribute('class','author');
+        author.textContent = book.getAuthor();
+        bookDiv.appendChild(author);
+        const pages = document.createElement('p');
+        pages.setAttribute('class','pages');
+        pages.textContent = book.getPages() + ' pages';
+        bookDiv.appendChild(pages);
+        const read = document.createElement('p');
+        read.setAttribute('class','read');
+        read.setAttribute('id','read-'+book.getBookId());
+        if (book.isReaded() == true) {
+            read.textContent = "\u2705 Read yet";
+        } else {
+            read.textContent = "\u274c Not read yet";
+        }
+        bookDiv.appendChild(read);
+        const btnCont = document.createElement('div');
+        btnCont.setAttribute('class','buttonsContainer');
+        const rmvBtn = document.createElement('button');
+        rmvBtn.setAttribute('class','removeButton');
+        rmvBtn.setAttribute('data-indexrmv',book.getBookId());
+        rmvBtn.textContent = "\u2717 Remove";
+        const statBtn = document.createElement('button');
+        statBtn.setAttribute('class','statusButton');
+        statBtn.setAttribute('data-indexstat',book.getBookId());
+        statBtn.textContent = "\u21B9 State";
+        btnCont.appendChild(rmvBtn);
+        btnCont.appendChild(statBtn);
+        bookDiv.appendChild(btnCont);
+        this.container.appendChild(bookDiv);
+    }
+
+    unShowBook(book) {
+        const thisDiv = document.getElementById('book-'+book.getBookId());
+        this.container.removeChild(thisDiv);
     }
 }
 
@@ -96,6 +239,7 @@ function checkForm() {
 }
 
 // Function that takes a book and place it into the Array and the DOM
+/*
 function addBookToLibrary(book) {
     myLibrary.push(book);
     const index = myLibrary.length-1;
@@ -106,6 +250,7 @@ function addBookToLibrary(book) {
     addListenerToARemoveButton(thisRmvBtn);
     addListenerToAChangeStatusButton(thisStatBtn);
 }
+*/
 
 function reorderIndexesInLibrary() {
     const divBooks = document.querySelectorAll('.book');
@@ -122,12 +267,14 @@ function reorderIndexesInLibrary() {
     }
 }
 
+/*
 // Function that takes a book and remove it from the Array and the DOM
 function removeBookFromLibrary(book) {
     myLibrary.splice(book.getOrderInLibrary(),1);
     book.unShow();
     reorderIndexesInLibrary();
 }
+*/
 
 // Listener associated to 'NEW BOOK' button
 const newBookButton = document.querySelector('#newBook');
@@ -163,17 +310,23 @@ saveBookButton.addEventListener('click', function() {
 });
 
 let urlCover = "NoBookCover.png";
-let myLibrary = [];
-const theHobbit = new Book("the-hobbit.jpg","The Hobbit", "J.R.R. Tolkien", 256, true);
-const ikigaiForTeens = new Book("ikigai-for-teens.jpg","Ikigai for Teens: Finding Your Reason for Being", "Hector Garcia Puigcerver", 176, false);
-const vestidoDeNovia = new Book("vestido-de-novia.jpg","Vestido de novia", "Pierre Lemaitre", 323, false);
-const cosmos = new Book("cosmos.jpg","Cosmos: Possible Worlds", "Ann Druyan", 384, false);
-const yoClaudio = new Book("yo-claudio.jpg","Yo, Claudio", "Robert Graves", 592, false);
-addBookToLibrary(theHobbit);
-addBookToLibrary(ikigaiForTeens);
-addBookToLibrary(vestidoDeNovia);
-addBookToLibrary(cosmos);
-addBookToLibrary(yoClaudio);
+let myLibrary = new Library("Veregorn's Library");
+let myUIController = new UIController();
+let theHobbit = new Book("the-hobbit.jpg","The Hobbit", "J.R.R. Tolkien", 256, true);
+let ikigaiForTeens = new Book("ikigai-for-teens.jpg","Ikigai for Teens: Finding Your Reason for Being", "Hector Garcia Puigcerver", 176, false);
+let vestidoDeNovia = new Book("vestido-de-novia.jpg","Vestido de novia", "Pierre Lemaitre", 323, false);
+let cosmos = new Book("cosmos.jpg","Cosmos: Possible Worlds", "Ann Druyan", 384, false);
+let yoClaudio = new Book("yo-claudio.jpg","Yo, Claudio", "Robert Graves", 592, false);
+myLibrary.addBookToLibrary(theHobbit);
+myUIController.showBook(theHobbit);
+myLibrary.addBookToLibrary(ikigaiForTeens);
+myUIController.showBook(ikigaiForTeens);
+myLibrary.addBookToLibrary(vestidoDeNovia);
+myUIController.showBook(vestidoDeNovia);
+myLibrary.addBookToLibrary(cosmos);
+myUIController.showBook(cosmos);
+myLibrary.addBookToLibrary(yoClaudio);
+myUIController.showBook(yoClaudio);
 
 // Function that creates the listener associated to a 'Remove Book' button
 function addListenerToARemoveButton(removeButton) {
