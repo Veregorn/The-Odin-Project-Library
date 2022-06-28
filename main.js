@@ -135,11 +135,19 @@ class Book {
 }
 
 class Library {
-    books = [];
-    idCounter = 0;
+    books;
+    idCounter;
 
     constructor(name) {
         this.name = name;
+        this.books = [
+            new Book("the-hobbit.jpg","The Hobbit", "J.R.R. Tolkien", 256, true),
+            new Book("ikigai-for-teens.jpg","Ikigai for Teens: Finding Your Reason for Being", "Hector Garcia Puigcerver", 176, false),
+            new Book("vestido-de-novia.jpg","Vestido de novia", "Pierre Lemaitre", 323, false),
+            new Book("cosmos.jpg","Cosmos: Possible Worlds", "Ann Druyan", 384, false),
+            new Book("yo-claudio.jpg","Yo, Claudio", "Robert Graves", 592, false)
+        ];
+        this.idCounter = 0;
     }
 
     addBookToLibrary(book) {
@@ -165,9 +173,17 @@ class Library {
             }
         }
     }
+
+    getBookFromLibrary(id) {
+        for (let i = 0; i < this.books.length; i++) {
+            if (this.books[i].id == id) {
+                return this.books[i];
+            }
+        }
+    }
 }
 
-class UIController {
+class UIView {
     
     container = document.querySelector('#main');
     
@@ -211,6 +227,7 @@ class UIController {
         statBtn.setAttribute('class','statusButton');
         statBtn.setAttribute('data-indexstat',book.getBookId());
         statBtn.textContent = "\u21B9 State";
+        addListenerToAChangeStatusButton(statBtn);
         btnCont.appendChild(rmvBtn);
         btnCont.appendChild(statBtn);
         bookDiv.appendChild(btnCont);
@@ -220,6 +237,13 @@ class UIController {
     unShowBook(book) {
         const thisDiv = document.getElementById('book-'+book.getBookId());
         this.container.removeChild(thisDiv);
+    }
+}
+
+class Controller {
+    constructor(model, view) {
+        this.library = model
+        this.view = view
     }
 }
 
@@ -310,23 +334,8 @@ saveBookButton.addEventListener('click', function() {
 });
 
 let urlCover = "NoBookCover.png";
-let myLibrary = new Library("Veregorn's Library");
-let myUIController = new UIController();
-let theHobbit = new Book("the-hobbit.jpg","The Hobbit", "J.R.R. Tolkien", 256, true);
-let ikigaiForTeens = new Book("ikigai-for-teens.jpg","Ikigai for Teens: Finding Your Reason for Being", "Hector Garcia Puigcerver", 176, false);
-let vestidoDeNovia = new Book("vestido-de-novia.jpg","Vestido de novia", "Pierre Lemaitre", 323, false);
-let cosmos = new Book("cosmos.jpg","Cosmos: Possible Worlds", "Ann Druyan", 384, false);
-let yoClaudio = new Book("yo-claudio.jpg","Yo, Claudio", "Robert Graves", 592, false);
-myLibrary.addBookToLibrary(theHobbit);
-myUIController.showBook(theHobbit);
-myLibrary.addBookToLibrary(ikigaiForTeens);
-myUIController.showBook(ikigaiForTeens);
-myLibrary.addBookToLibrary(vestidoDeNovia);
-myUIController.showBook(vestidoDeNovia);
-myLibrary.addBookToLibrary(cosmos);
-myUIController.showBook(cosmos);
-myLibrary.addBookToLibrary(yoClaudio);
-myUIController.showBook(yoClaudio);
+const myLibrary = new Controller(new Library("Veregorn's Library"), new UIView());
+
 
 // Function that creates the listener associated to a 'Remove Book' button
 function addListenerToARemoveButton(removeButton) {
