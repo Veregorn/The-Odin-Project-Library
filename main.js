@@ -1,9 +1,8 @@
 // Class Book (new version)
 class Book {
-    // orderInLibrary;
-    id;
 
     constructor(cover,title,author,pages,read) {
+        this.id;
         if (cover == "") {
             this.cover = "./NoBookCover.png"
         } else {
@@ -14,12 +13,6 @@ class Book {
         this.pages = pages;
         this.read = read;
     }
-
-    /*
-    getOrderInLibrary() {
-        return this.orderInLibrary;
-    }
-    */
 
     getBookId() {
         return this.id;
@@ -73,70 +66,10 @@ class Book {
             this.read = true;
         }
     }
-
-    /*
-    changeOrderInLibrary(position) {
-        this.orderInLibrary = position;
-    }
-
-    show() {
-        const container = document.querySelector('#main');
-        const bookDiv = document.createElement('div');
-        bookDiv.setAttribute('class','book');
-        bookDiv.setAttribute('id','book-'+this.orderInLibrary);
-        const cover = document.createElement('img');
-        cover.setAttribute('class','cover');
-        cover.setAttribute('src',this.cover);
-        cover.setAttribute('alt',this.title);
-        bookDiv.appendChild(cover);
-        const title = document.createElement('p');
-        title.setAttribute('class','title');
-        title.textContent = this.title;
-        bookDiv.appendChild(title);
-        const author = document.createElement('p');
-        author.setAttribute('class','author');
-        author.textContent = this.author;
-        bookDiv.appendChild(author);
-        const pages = document.createElement('p');
-        pages.setAttribute('class','pages');
-        pages.textContent = this.pages + ' pages';
-        bookDiv.appendChild(pages);
-        const read = document.createElement('p');
-        read.setAttribute('class','read');
-        read.setAttribute('id','read-'+this.orderInLibrary);
-        if (this.read == true) {
-            read.textContent = "\u2705 Read yet";
-        } else {
-            read.textContent = "\u274c Not read yet";
-        }
-        bookDiv.appendChild(read);
-        const btnCont = document.createElement('div');
-        btnCont.setAttribute('class','buttonsContainer');
-        const rmvBtn = document.createElement('button');
-        rmvBtn.setAttribute('class','removeButton');
-        rmvBtn.setAttribute('data-indexrmv',this.orderInLibrary);
-        rmvBtn.textContent = "\u2717 Remove";
-        const statBtn = document.createElement('button');
-        statBtn.setAttribute('class','statusButton');
-        statBtn.setAttribute('data-indexstat',this.orderInLibrary);
-        statBtn.textContent = "\u21B9 State";
-        btnCont.appendChild(rmvBtn);
-        btnCont.appendChild(statBtn);
-        bookDiv.appendChild(btnCont);
-        container.appendChild(bookDiv);
-    }
-
-    unShow() {
-        const container = document.querySelector('#main');
-        const thisDiv = document.getElementById('book-'+this.orderInLibrary);
-        container.removeChild(thisDiv);
-    }
-    */
 }
 
 class Library {
     books;
-    idCounter;
 
     constructor(name) {
         this.name = name;
@@ -147,141 +80,234 @@ class Library {
             new Book("cosmos.jpg","Cosmos: Possible Worlds", "Ann Druyan", 384, false),
             new Book("yo-claudio.jpg","Yo, Claudio", "Robert Graves", 592, false)
         ];
-        this.idCounter = 0;
+    }
+
+    getLibraryLength() {
+        return this.books.length;
     }
 
     addBookToLibrary(book) {
-        this.idCounter++;
-        book.setBookId(this.idCounter);
+        book.setBookId(this.getLibraryLength()+1);
         this.books.push(book);
-
-        /*
-        const index = this.books.length-1;
-        book.changeOrderInLibrary(index);
-        book.show();
-        const thisRmvBtn = document.querySelector('[data-indexrmv="' + index + '"]');
-        const thisStatBtn = document.querySelector('[data-indexstat="' + index + '"]');
-        addListenerToARemoveButton(thisRmvBtn);
-        addListenerToAChangeStatusButton(thisStatBtn);
-        */
+        this.onBookListChanged(this.books);
     }
 
     removeBookFromLibrary(id) {
-        for (let i = 0; i < this.books.length; i++) {
+        for (let i = 0; i < this.getLibraryLength(); i++) {
             if (this.books[i].id == id) {
                 this.books.splice(i,1);
             }
         }
+        this.onBookListChanged(this.books);
     }
 
     getBookFromLibrary(id) {
-        for (let i = 0; i < this.books.length; i++) {
+        for (let i = 0; i < this.getLibraryLength(); i++) {
             if (this.books[i].id == id) {
                 return this.books[i];
             }
         }
     }
+
+    toggleBookRead(id) {
+        for (let i = 0; i < this.getLibraryLength(); i++) {
+            if (this.books[i].id == id) {
+                this.books[i].changeReadStatus();
+            }
+        }
+        this.onBookListChanged(this.books);
+    }
+
+    bindLibraryChanged(callback) {
+        this.onBookListChanged = callback;
+    }
 }
 
 class UIView {
     
-    container = document.querySelector('#main');
-    
-    showBook(book) {
-        const bookDiv = document.createElement('div');
-        bookDiv.setAttribute('class','book');
-        bookDiv.setAttribute('id','book-'+book.getBookId());
-        const cover = document.createElement('img');
-        cover.setAttribute('class','cover');
-        cover.setAttribute('src',book.getCover());
-        cover.setAttribute('alt',book.getTitle());
-        bookDiv.appendChild(cover);
-        const title = document.createElement('p');
-        title.setAttribute('class','title');
-        title.textContent = book.getTitle();
-        bookDiv.appendChild(title);
-        const author = document.createElement('p');
-        author.setAttribute('class','author');
-        author.textContent = book.getAuthor();
-        bookDiv.appendChild(author);
-        const pages = document.createElement('p');
-        pages.setAttribute('class','pages');
-        pages.textContent = book.getPages() + ' pages';
-        bookDiv.appendChild(pages);
-        const read = document.createElement('p');
-        read.setAttribute('class','read');
-        read.setAttribute('id','read-'+book.getBookId());
-        if (book.isReaded() == true) {
-            read.textContent = "\u2705 Read yet";
-        } else {
-            read.textContent = "\u274c Not read yet";
-        }
-        bookDiv.appendChild(read);
-        const btnCont = document.createElement('div');
-        btnCont.setAttribute('class','buttonsContainer');
-        const rmvBtn = document.createElement('button');
-        rmvBtn.setAttribute('class','removeButton');
-        rmvBtn.setAttribute('data-indexrmv',book.getBookId());
-        rmvBtn.textContent = "\u2717 Remove";
-        const statBtn = document.createElement('button');
-        statBtn.setAttribute('class','statusButton');
-        statBtn.setAttribute('data-indexstat',book.getBookId());
-        statBtn.textContent = "\u21B9 State";
-        addListenerToAChangeStatusButton(statBtn);
-        btnCont.appendChild(rmvBtn);
-        btnCont.appendChild(statBtn);
-        bookDiv.appendChild(btnCont);
-        this.container.appendChild(bookDiv);
+    constructor() {
+        // Stores book cover's name file
+        this.urlCover = "NoBookCover.png";
+        
+        // Element that stores all div about books
+        this.container = this.getElement('main');
+
+        // Elements of New Book Form
+        this.titleInput = this.getElement('title');
+        this.authorInput = this.getElement('author');
+        this.pagesInput = this.getElement('pages');
+        this.readCheckbox = this.getElement('read');
     }
 
-    unShowBook(book) {
-        const thisDiv = document.getElementById('book-'+book.getBookId());
-        this.container.removeChild(thisDiv);
+    // Create an element with optional CSS class and ID
+    createElement(tag, className, id) {
+        const element = document.createElement(tag);
+        if (className) {
+            element.setAttribute('class',className);
+        }
+        if (id) {
+            element.setAttribute('id',id);
+        }
+        return element;
+    }
+
+    getElement(id) {
+        const element = document.getElementById(id);
+        return element;
+    }
+
+    displayBooks(books) {
+        // Delete all nodes
+        while (this.container.firstChild) {
+            this.container.removeChild(this.container.firstChild)
+        }
+
+        // Show default message
+        if (books.length === 0) {
+            const p = this.createElement('p');
+            p.textContent = "The Library is empty";
+            this.container.appendChild(p);
+        } else {
+            // Create divs for every book in the array
+            books.forEach(book => {
+                const bookDiv = this.createElement('div','book','book-'+book.getBookId());
+                const cover = this.createElement('img','cover');
+                cover.setAttribute('src',book.getCover());
+                cover.setAttribute('alt',book.getTitle());
+                bookDiv.appendChild(cover);
+                const title = this.createElement('p','title');
+                title.textContent = book.getTitle();
+                bookDiv.appendChild(title);
+                const author = this.createElement('p','author');
+                author.textContent = book.getAuthor();
+                bookDiv.appendChild(author);
+                const pages = this.createElement('p','pages');
+                pages.textContent = book.getPages() + ' pages';
+                bookDiv.appendChild(pages);
+                const read = this.createElement('p','read','read-'+book.getBookId());
+                if (book.isReaded() == true) {
+                    read.textContent = "\u2705 Read yet";
+                } else {
+                    read.textContent = "\u274c Not read yet";
+                }
+                bookDiv.appendChild(read);
+                const btnCont = this.createElement('div','buttonsContainer');
+                const rmvBtn = this.createElement('button','removeButton');
+                rmvBtn.setAttribute('data-indexrmv',book.getBookId());
+                rmvBtn.textContent = "\u2717 Remove";
+                const statBtn = this.createElement('button','statusButton');
+                statBtn.setAttribute('data-indexstat',book.getBookId());
+                statBtn.textContent = "\u21B9 State";
+                btnCont.appendChild(rmvBtn);
+                btnCont.appendChild(statBtn);
+                bookDiv.appendChild(btnCont);
+                this.container.appendChild(bookDiv);
+            });
+        }
+    }
+
+    // Method that changes 'popup' class element 'display' property to 'flex'
+    showForm() {
+        const saveBookButton = this.getElement('saveBook');
+        saveBookButton.disabled = true;
+        const form = document.querySelector('.popup');
+        form.style.display = "flex";
+    }
+
+    // Method that changes 'popup' class element 'display' property to 'none'
+    closeForm() {
+        const form = this.getElement("newBookForm");
+        form.reset();
+        const popup = document.querySelector('.popup');
+        popup.style.display = "none";
+    }
+
+    // Method that enable 'Save Book' button only when user fills fields 'Title', 'Author' and 'Pages'
+    checkForm() {
+        const requiredElements = document.querySelectorAll('.notCheckbox');
+        let canSaveBook = true;
+
+        for (let i = 0; i < requiredElements.length; i++) {
+            const element = requiredElements[i];
+            if (element.value.length == 0) {
+                canSaveBook = false;
+            }
+        }
+
+        document.getElementById('saveBook').disabled = !canSaveBook;
+    }
+
+    // Add an Event Listener to the 'NEW BOOK' button
+    bindNewBook() {
+        this.getElement('newBook').addEventListener('click', () => { this.showForm(); });
+    }
+
+    // Add an Event Listener to the zone out of the 'newBookForm'
+    // to close it if user clicks outside it
+    bindOutForm() {
+        document.addEventListener('click', (element) => {
+            // Check if the zone clicked is out the form div
+            const isOutOfForm = element.target.closest('.popup-content');
+            // Check if the zone clicked is the 'New Book' button
+            const isButton = element.target.closest('button');
+            const popup = document.querySelector('.popup');
+            // If the users clicks out the form and the zone isn't the 'New Book' button and
+            // the form is visible...
+            if (!isOutOfForm && !isButton && popup.style.display == 'flex') {
+                this.closeForm();
+            }
+        });
+    }
+
+    // Add an Event Listener to the 'SAVE BOOK' button
+    bindSaveBook(handler) {
+        this.getElement('saveBook').addEventListener('click', () => {
+            const book = new Book(this.urlCover,this.titleInput.value,
+                this.authorInput.value,this.pagesInput.value,this.readCheckbox.checked);
+            handler(book);
+            this.closeForm();
+        });
     }
 }
 
 class Controller {
     constructor(model, view) {
-        this.library = model
-        this.view = view
-    }
-}
+        this.library = model;
+        this.view = view;
 
-// Function that enable 'Save Book' button only when user fills fields 'Title', 'Author' and 'Pages'
-function checkForm() {
-    const requiredElements = document.querySelectorAll('.notCheckbox');
-    let canSaveBook = true;
+        // Explicit this binding
+        this.view.bindNewBook();
+        this.view.bindOutForm();
+        this.view.bindSaveBook(this.handleSaveBook);
+        this.library.bindLibraryChanged(this.onBookListChanged);
 
-    for (let i = 0; i < requiredElements.length; i++) {
-        const element = requiredElements[i];
-        if (element.value.length == 0) {
-            canSaveBook = false;
-        }
+        // Display initial books
+        this.onBookListChanged(this.library.books);
     }
 
-    document.getElementById('saveBook').disabled = !canSaveBook;
-}
+    onBookListChanged = (books) => {
+        this.view.displayBooks(books);
+    }
 
-// Function that takes a book and place it into the Array and the DOM
-/*
-function addBookToLibrary(book) {
-    myLibrary.push(book);
-    const index = myLibrary.length-1;
-    book.changeOrderInLibrary(index);
-    book.show();
-    const thisRmvBtn = document.querySelector('[data-indexrmv="' + index + '"]');
-    const thisStatBtn = document.querySelector('[data-indexstat="' + index + '"]');
-    addListenerToARemoveButton(thisRmvBtn);
-    addListenerToAChangeStatusButton(thisStatBtn);
+    handleSaveBook = book => {
+        this.library.addBookToLibrary(book);
+    }
+
+    handleRemoveBook = (id) => {
+        this.library.removeBookFromLibrary(id);
+    }
+
+    handleToggleState = (id) => {
+        this.library.toggleBookRead(id);
+    }
 }
-*/
 
 function reorderIndexesInLibrary() {
     const divBooks = document.querySelectorAll('.book');
     const removeButtons = document.querySelectorAll('.removeButton');
     const changeStatusButtons = document.querySelectorAll('.statusButton');
     const readAttributes = document.querySelectorAll('.read');
-    for (let i = 0; i < myLibrary.length; i++) {
+    for (let i = 0; i < myLibrary.getLibraryLength(); i++) {
         const book = myLibrary[i];
         book.changeOrderInLibrary(i);
         divBooks[i].setAttribute('id','book-'+i);
@@ -291,51 +317,7 @@ function reorderIndexesInLibrary() {
     }
 }
 
-/*
-// Function that takes a book and remove it from the Array and the DOM
-function removeBookFromLibrary(book) {
-    myLibrary.splice(book.getOrderInLibrary(),1);
-    book.unShow();
-    reorderIndexesInLibrary();
-}
-*/
-
-// Listener associated to 'NEW BOOK' button
-const newBookButton = document.querySelector('#newBook');
-newBookButton.addEventListener('click', function(){showForm()});
-
-// Function that changes 'popup' class element 'display' property
-function showForm() {
-    const saveBookButton = document.getElementById('saveBook');
-    saveBookButton.disabled = true;
-    const form = document.querySelector('.popup');
-    form.style.display = "flex";
-}
-
-function closeForm() {
-    const form = document.getElementById("newBookForm");
-    form.reset();
-    const popup = document.querySelector('.popup');
-    popup.style.display = "none";
-}
-
-// Listener associated to 'Save Book' button
-const saveBookButton = document.querySelector('#saveBook');
-saveBookButton.addEventListener('click', function() {
-    const cover = urlCover;
-    const title = document.getElementById("title").value;
-    const author = document.getElementById("author").value;
-    const pages = document.getElementById("pages").value;
-    const read = document.getElementById("read").checked;
-
-    const newBook = new Book(cover,title,author,pages,read);
-    addBookToLibrary(newBook);
-    closeForm();
-});
-
-let urlCover = "NoBookCover.png";
 const myLibrary = new Controller(new Library("Veregorn's Library"), new UIView());
-
 
 // Function that creates the listener associated to a 'Remove Book' button
 function addListenerToARemoveButton(removeButton) {
@@ -361,20 +343,6 @@ function addListenerToAChangeStatusButton(changeButton) {
         }
     });
 }
-
-// Listener that hide the form if the user click outside it
-document.addEventListener('click', function(element) {
-    // Check if the zone clicked is out the form div
-    const isOutOfForm = element.target.closest('.popup-content');
-    // Check if the zone clicked is the 'New Book' button
-    const isButton = element.target.closest('button');
-    const popup = document.querySelector('.popup');
-    // If the users clicks out the form and the zone isn't the 'New Book' button and
-    // the form is visible...
-    if (!isOutOfForm && !isButton && popup.style.display == 'flex') {
-        closeForm();
-    }
-});
 
 // Listener for covers
 const coverInput = document.querySelector('#cover');
