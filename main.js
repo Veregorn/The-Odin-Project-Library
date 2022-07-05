@@ -80,6 +80,9 @@ class Library {
             new Book("cosmos.jpg","Cosmos: Possible Worlds", "Ann Druyan", 384, false),
             new Book("yo-claudio.jpg","Yo, Claudio", "Robert Graves", 592, false)
         ];
+        for (let i = 0; i < this.books.length; i++) {
+            this.books[i].setBookId(i+1);
+        }
     }
 
     getLibraryLength() {
@@ -118,6 +121,15 @@ class Library {
         this.onBookListChanged(this.books);
     }
 
+    changeBookCover(id, cover) {
+        for (let i = 0; i < this.getLibraryLength(); i++) {
+            if (this.books[i].id == id) {
+                this.books[i].setCover(cover);
+            }
+        }
+        this.onBookListChanged(this.books);
+    }
+
     bindLibraryChanged(callback) {
         this.onBookListChanged = callback;
     }
@@ -137,6 +149,9 @@ class UIView {
         this.authorInput = this.getElement('author');
         this.pagesInput = this.getElement('pages');
         this.readCheckbox = this.getElement('read');
+
+        // Elements for change cover
+        this.coverImg = this.getElement('display-cover');
     }
 
     // Create an element with optional CSS class and ID
@@ -154,6 +169,11 @@ class UIView {
     getElement(id) {
         const element = document.getElementById(id);
         return element;
+    }
+
+    getElementsByClass(c) {
+        const elemArray = document.querySelectorAll(c);
+        return elemArray;
     }
 
     displayBooks(books) {
@@ -268,6 +288,36 @@ class UIView {
             this.closeForm();
         });
     }
+
+    // Add an Event Listener to 'Remove' Button
+    bindRemoveBook(handler) {
+        this.container.addEventListener('click', event => {
+            if (event.target.className === 'removeButton') {
+                const id = event.target.dataset.indexrmv;
+                handler(id);
+            }
+        });
+    }
+
+    // Add an Event Listener to a 'State' Button
+    bindToggleState(handler) {
+        this.container.addEventListener('click', event => {
+            if (event.target.className === 'statusButton') {
+                const id = event.target.dataset.indexstat;
+                handler(id);
+            }
+        });
+    }
+
+    // Add an Event Listener for change book covers button
+    bindChangeCover() {
+        document.addEventListener('change', event => {
+            if (event.target.className === 'cover') {
+                this.urlCover = URL.createObjectURL(event.target.files[0]);
+                this.coverImg.src = this.urlCover;
+            }
+        });
+    }
 }
 
 class Controller {
@@ -279,6 +329,9 @@ class Controller {
         this.view.bindNewBook();
         this.view.bindOutForm();
         this.view.bindSaveBook(this.handleSaveBook);
+        this.view.bindRemoveBook(this.handleRemoveBook);
+        this.view.bindToggleState(this.handleToggleState);
+        this.view.bindChangeCover();
         this.library.bindLibraryChanged(this.onBookListChanged);
 
         // Display initial books
@@ -300,55 +353,10 @@ class Controller {
     handleToggleState = (id) => {
         this.library.toggleBookRead(id);
     }
-}
 
-function reorderIndexesInLibrary() {
-    const divBooks = document.querySelectorAll('.book');
-    const removeButtons = document.querySelectorAll('.removeButton');
-    const changeStatusButtons = document.querySelectorAll('.statusButton');
-    const readAttributes = document.querySelectorAll('.read');
-    for (let i = 0; i < myLibrary.getLibraryLength(); i++) {
-        const book = myLibrary[i];
-        book.changeOrderInLibrary(i);
-        divBooks[i].setAttribute('id','book-'+i);
-        removeButtons[i].setAttribute('data-indexrmv',i);
-        changeStatusButtons[i].setAttribute('data-indexstat',i);
-        readAttributes[i].setAttribute('id','read-'+i);
+    handleChangeCover = (id,cover) => {
+        this.library.changeBookCover(id,cover);
     }
 }
 
 const myLibrary = new Controller(new Library("Veregorn's Library"), new UIView());
-
-// Function that creates the listener associated to a 'Remove Book' button
-function addListenerToARemoveButton(removeButton) {
-    removeButton.addEventListener('click', function() {
-        const i = removeButton.dataset.indexrmv;
-        removeBookFromLibrary(myLibrary[i]);
-    });
-}
-
-// Function that creates the listener associated to a 'Change Read Status' button
-function addListenerToAChangeStatusButton(changeButton) {
-    changeButton.addEventListener('click', function() {
-        // First, let's edit the object Book
-        const i = changeButton.dataset.indexstat;
-        const book = myLibrary[i];
-        book.changeReadStatus();
-        // Let's modify the DOM
-        const element = document.getElementById('read-'+i);
-        if (book.isReaded()) {
-            element.textContent = "\u2705 Read yet";
-        } else {
-            element.textContent = "\u274c Not read yet";
-        }
-    });
-}
-
-// Listener for covers
-const coverInput = document.querySelector('#cover');
-
-coverInput.addEventListener('change', function() {
-    const coverImg = document.querySelector('#display-cover');
-    urlCover = URL.createObjectURL(this.files[0]);
-    coverImg.src = urlCover;
-});
