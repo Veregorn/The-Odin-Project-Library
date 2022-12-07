@@ -80,21 +80,6 @@ function Book(cover, title, author, pages, read) {
     }
 }
 
-// Function that enable 'Save Book' button only when user fills fields 'Title', 'Author' and 'Pages'
-function checkForm() {
-    const requiredElements = document.querySelectorAll('.notCheckbox');
-    let canSaveBook = true;
-
-    for (let i = 0; i < requiredElements.length; i++) {
-        const element = requiredElements[i];
-        if (element.value.length == 0) {
-            canSaveBook = false;
-        }
-    }
-
-    document.getElementById('saveBook').disabled = !canSaveBook;
-}
-
 // Function that takes a book and place it into the Array and the DOM
 function addBookToLibrary(book) {
     myLibrary.push(book);
@@ -135,31 +120,58 @@ newBookButton.addEventListener('click', function(){showForm()});
 
 // Function that changes 'popup' class element 'display' property
 function showForm() {
-    const saveBookButton = document.getElementById('saveBook');
-    saveBookButton.disabled = true;
     const form = document.querySelector('.popup');
     form.style.display = "flex";
 }
 
+const title = document.getElementById("title");
+const author = document.getElementById("author");
+const pages = document.getElementById("pages");
+
 function closeForm() {
     const form = document.getElementById("newBookForm");
     form.reset();
+    title.setCustomValidity("");
+    author.setCustomValidity("");
+    pages.setCustomValidity("");
     const popup = document.querySelector('.popup');
     popup.style.display = "none";
 }
 
+function showError() {
+    if (title.validity.valueMissing || title.validity.tooShort || title.validity.tooLong) {
+        title.setCustomValidity("Title must be a 1 to 60 char text");
+        title.reportValidity();
+    } else if (author.validity.valueMissing || author.validity.tooShort || author.validity.tooLong) {
+        author.setCustomValidity("Author must be a 1 to 60 char text");
+        author.reportValidity();
+    } else if (pages.validity.valueMissing || pages.validity.rangeUnderflow || pages.validity.rangeOverflow) {
+        pages.setCustomValidity("Pages must be a 1 to 99999 number");
+        pages.reportValidity();
+    }
+    title.setCustomValidity("");
+    author.setCustomValidity("");
+    pages.setCustomValidity("");
+}
+
 // Listener associated to 'Save Book' button
 const saveBookButton = document.querySelector('#saveBook');
-saveBookButton.addEventListener('click', function() {
-    const cover = urlCover;
-    const title = document.getElementById("title").value;
-    const author = document.getElementById("author").value;
-    const pages = document.getElementById("pages").value;
-    const read = document.getElementById("read").checked;
+saveBookButton.addEventListener('click', function(event) {
+    if (!title.validity.valid || !author.validity.valid || !pages.validity.valid) {
+        showError();
+        // We cancel the event
+        event.preventDefault();
+    } else {
+        const cover = urlCover;
+        const title = document.getElementById("title").value;
+        const author = document.getElementById("author").value;
+        const pages = document.getElementById("pages").value;
+        const read = document.getElementById("read").checked;
 
-    const newBook = new Book(cover,title,author,pages,read);
-    addBookToLibrary(newBook);
-    closeForm();
+        const newBook = new Book(cover,title,author,pages,read);
+        addBookToLibrary(newBook);
+        closeForm();
+    }
 });
 
 let urlCover = "NoBookCover.png";

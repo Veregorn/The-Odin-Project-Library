@@ -140,6 +140,10 @@ input[type="file"] {
     font-size: 18px;
 }
 
+.notCheckbox:invalid {
+    border: 2px dashed red;
+}
+
 .checkbox {
     transform: scale(2);
     margin-bottom: 10px;
